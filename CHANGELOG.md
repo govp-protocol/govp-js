@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.1 — 2026-08-05
+
+- publish a working signed-release installation path while npm scope ownership
+  is being configured;
+- keep the verifier API, protocol behavior and conformance inputs unchanged.
+
 ## 0.1.0 — 2026-08-05
 
 - publish the first installable JavaScript GOVP verifier;

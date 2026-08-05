@@ -9,11 +9,11 @@ records, assets or results to GOVP.
 
 ## Install
 
-The signed 0.1.0 release is installable directly while the new `@govp` npm
+The signed 0.1.1 release is installable directly while the new `@govp` npm
 scope is being registered:
 
 ```bash
-npm install https://github.com/govp-protocol/govp-js/releases/download/v0.1.0/govp-verifier-0.1.0.tgz
+npm install https://github.com/govp-protocol/govp-js/releases/download/v0.1.1/govp-verifier-0.1.1.tgz
 ```
 
 After npm trusted publishing is activated, the stable registry command will be
