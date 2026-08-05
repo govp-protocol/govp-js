@@ -9,9 +9,16 @@ records, assets or results to GOVP.
 
 ## Install
 
+The signed 0.1.0 release is installable directly while the new `@govp` npm
+scope is being registered:
+
 ```bash
-npm install @govp/verifier
+npm install https://github.com/govp-protocol/govp-js/releases/download/v0.1.0/govp-verifier-0.1.0.tgz
 ```
+
+After npm trusted publishing is activated, the stable registry command will be
+`npm install @govp/verifier`. Both routes resolve to the same package name and
+public API; verify the release tarball against its adjacent `SHA256SUMS` file.
 
 ## Verify a record
 
