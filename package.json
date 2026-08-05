@@ -1,0 +1,58 @@
+{
+  "name": "@govp/verifier",
+  "version": "0.1.0",
+  "description": "Environment-neutral JavaScript verifier for GOVP-1 and GOVP-STATUS-1",
+  "type": "module",
+  "main": "./src/index.js",
+  "types": "./src/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.d.ts",
+      "import": "./src/index.js",
+      "default": "./src/index.js"
+    },
+    "./conformance/*": "./conformance/*"
+  },
+  "files": [
+    "src",
+    "conformance",
+    "CHANGELOG.md",
+    "LICENSE",
+    "NOTICE",
+    "README.md",
+    "SECURITY.md",
+    "THIRD_PARTY_NOTICES.md",
+    "TRADEMARKS.md"
+  ],
+  "sideEffects": false,
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "test": "node --test tests/*.test.mjs",
+    "check": "npm test && npm pack --dry-run"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/govp-protocol/govp-js.git"
+  },
+  "homepage": "https://govp.io",
+  "bugs": {
+    "url": "https://github.com/govp-protocol/govp-js/issues"
+  },
+  "keywords": [
+    "govp",
+    "verification",
+    "ed25519",
+    "provenance",
+    "evidence"
+  ],
+  "author": "Gemacode",
+  "license": "Apache-2.0",
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@noble/ed25519": "3.1.0"
+  }
+}
