@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.5 — 2026-08-06
+
+- fetch the complete Git tag history before enforcing the verified annotated-tag
+  publication gate;
+- keep the verifier API, protocol behavior and conformance inputs unchanged.
+
 ## 0.1.4 — 2026-08-06
 
 - publish only from a verified annotated Git tag, using npm Trusted Publishing
