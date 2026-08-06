@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.1.8 — 2026-08-06
+
+- fix a high-severity status bypass by applying key and revocation decisions to
+  the fields normalized and verified by the GOVP-1 core;
+- require bounded status freshness before returning `currentlyTrusted: true`
+  and add `snapshotValid` while retaining the old snapshot name as an alias;
+- reject normalized and legacy-alias field collisions in JSON input while
+  preserving text-record last-value semantics;
+- use one strict Ed25519 verifier in every environment, reject exceptional
+  point/scalar encodings, and use pinned pure-JavaScript SHA-2 primitives;
+- include the test suite in the npm package so `npm test` cannot silently run
+  zero tests after installation;
+- add replay, clock-skew, alternate-casing, JSON-collision, exceptional-point
+  and no-WebCrypto regressions.
+
 ## 0.1.7 — 2026-08-06
 
 - pin and assert npm CLI 11.16.0 before publication so Trusted Publishing OIDC

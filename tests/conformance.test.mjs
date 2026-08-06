@@ -22,6 +22,7 @@ const jsonVectors = JSON.parse(await readFile(new URL(
 const statusVectors = JSON.parse(await readFile(new URL(
   '../conformance/status-vectors.json', import.meta.url,
 ), 'utf8'));
+const STATUS_NOW = Date.parse('2026-08-05T22:09:00Z');
 
 async function sha256Hex(bytes) {
   const digest = await crypto.subtle.digest('SHA-256', bytes);
@@ -89,16 +90,104 @@ test('live status requires exact online bindings and an active key', async () =>
     status.keys[0].key_id,
   );
 
-  const offline = await evaluateStatus(fields, status);
+  const offline = await evaluateStatus(fields, status, { now: STATUS_NOW });
+  assert.equal(offline.snapshotValid, true);
   assert.equal(offline.snapshotTrusted, true);
   assert.equal(offline.currentlyTrusted, null);
 
   const online = await evaluateStatus(fields, status, {
     recordFetchedUrl: fields.canonical,
     fetchedUrl: status.canonical,
+    now: STATUS_NOW,
   });
   assert.equal(online.currentlyTrusted, true);
   assert.equal(Object.values(online.checks).every((value) => value === true), true);
+});
+
+test('live status rejects stale replay and future timestamps', async () => {
+  const recordText = await readFile(new URL('./fixtures/govp.io.govp.txt', import.meta.url), 'utf8');
+  const statusText = await readFile(new URL('./fixtures/govp.io-status.json', import.meta.url), 'utf8');
+  const fields = parseRecord(recordText);
+  const base = parseStatus(statusText);
+  const options = {
+    recordFetchedUrl: fields.canonical,
+    fetchedUrl: base.canonical,
+    now: STATUS_NOW,
+  };
+
+  const stale = await evaluateStatus(fields, {
+    ...base,
+    generated_at: '2026-08-05T22:03:59Z',
+  }, options);
+  assert.equal(stale.snapshotValid, true);
+  assert.equal(stale.checks['status-fresh'], false);
+  assert.equal(stale.currentlyTrusted, false);
+
+  const future = await evaluateStatus(fields, {
+    ...base,
+    generated_at: '2026-08-05T22:10:01Z',
+  }, options);
+  assert.equal(future.snapshotValid, true);
+  assert.equal(future.checks['status-fresh'], false);
+  assert.equal(future.currentlyTrusted, false);
+});
+
+test('status decisions use verified normalized fields and cannot miss revocation aliases', async () => {
+  const recordText = await readFile(new URL('./fixtures/govp.io.govp.txt', import.meta.url), 'utf8');
+  const statusText = await readFile(new URL('./fixtures/govp.io-status.json', import.meta.url), 'utf8');
+  const fields = parseRecord(recordText);
+  const status = parseStatus(statusText);
+  status.revoked_records.push({
+    govp_id: fields['govp-id'],
+    revoked_at: '2026-08-05T22:08:00Z',
+    reason: 'withdrawn',
+  });
+  const aliased = { ...fields, 'Govp-ID': fields['govp-id'] };
+  delete aliased['govp-id'];
+
+  const result = await evaluateStatus(aliased, status, {
+    recordFetchedUrl: fields.canonical,
+    fetchedUrl: status.canonical,
+    now: STATUS_NOW,
+  });
+  assert.equal(result.checks.core, true);
+  assert.equal(result.checks['record-not-revoked'], false);
+  assert.equal(result.currentlyTrusted, false);
+});
+
+test('strict Ed25519 encodings and insecure browser contexts fail deterministically', async () => {
+  const valid = textVectors.vectors.find((vector) => vector.expected.core_valid);
+  const fields = parseRecord(valid.record);
+  const identity = Buffer.concat([Buffer.from([1]), Buffer.alloc(31)]);
+  const signature = Buffer.from(fields.signature, 'base64');
+  const order = 2n ** 252n + 27742317777372353535851937790883648493n;
+  const highS = Buffer.alloc(32);
+  let scalar = order;
+  for (let index = 0; index < 32; index += 1) {
+    highS[index] = Number(scalar & 0xffn);
+    scalar >>= 8n;
+  }
+
+  assert.equal((await verifyFields({
+    ...fields,
+    'public-key': identity.toString('base64'),
+  })).checks.signature, false);
+  assert.equal((await verifyFields({
+    ...fields,
+    signature: Buffer.concat([identity, signature.subarray(32)]).toString('base64'),
+  })).checks.signature, false);
+  assert.equal((await verifyFields({
+    ...fields,
+    signature: Buffer.concat([signature.subarray(0, 32), highS]).toString('base64'),
+  })).checks.signature, false);
+
+  const cryptoDescriptor = Object.getOwnPropertyDescriptor(globalThis, 'crypto');
+  try {
+    Object.defineProperty(globalThis, 'crypto', { configurable: true, value: undefined });
+    assert.equal((await verifyText(valid.record)).ok, true);
+  } finally {
+    if (cryptoDescriptor) Object.defineProperty(globalThis, 'crypto', cryptoDescriptor);
+  }
 });
 
 test('tampering still fails independently of status', async () => {

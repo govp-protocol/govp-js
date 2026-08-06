@@ -19,7 +19,7 @@ For reproducible audits, the matching release tarball and `SHA256SUMS` are also
 published with the signed GitHub release:
 
 ```bash
-npm install https://github.com/govp-protocol/govp-js/releases/download/v0.1.7/govp-verifier-0.1.7.tgz
+npm install https://github.com/govp-protocol/govp-js/releases/download/v0.1.8/govp-verifier-0.1.8.tgz
 ```
 
 ## Verify a record
@@ -54,9 +54,14 @@ const result = await evaluateStatus(
 if (result.currentlyTrusted !== true) throw new Error(result.reasons.join(', '));
 ```
 
-Offline status evaluation can validate a snapshot but returns
-`currentlyTrusted: null`. Network retrieval remains the caller's responsibility
-so applications can enforce their own TLS, redirect and resource policies.
+Live trust additionally requires `generated_at` within the default 300-second
+maximum age and 60-second future clock-skew allowance. Pass
+`maxAgeSeconds`, `maxFutureSkewSeconds` and an optional `now` explicitly for a
+stricter or reproducible policy. Offline evaluation can return
+`snapshotValid: true`, but always returns `currentlyTrusted: null` because a
+saved file cannot prove liveness. `snapshotTrusted` is a deprecated 0.1.x alias
+for `snapshotValid`. Network retrieval remains the caller's responsibility so
+applications can enforce their own TLS, redirect and resource policies.
 
 ## Conformance
 
@@ -66,8 +71,10 @@ The npm package contains the exact public vectors under exported paths:
 import vectors from '@govp/verifier/conformance/vectors.json' with { type: 'json' };
 ```
 
-Run the implementation suite with `npm test`. The source repository tests every
-GOVP-1 vector and the separately versioned GOVP-STATUS-1 suite.
+Run the implementation suite with `npm test`; the tests are included in the
+published package, so this command also works after a registry install. The
+suite tests every GOVP-1 vector and the separately versioned GOVP-STATUS-1
+suite.
 
 Specification and documentation: [govp.io](https://govp.io)  
 Python reference implementation: [`govp`](https://pypi.org/project/govp/)  

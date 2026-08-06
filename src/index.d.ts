@@ -16,11 +16,15 @@ export interface VerificationResult {
   assetSha256: string | null;
   warnings: string[];
   bundle: boolean | null;
-  native: boolean | null;
+  /** @deprecated Verification uses the deterministic backend named by backend. */
+  native: false;
+  backend: string;
 }
 
 export interface StatusResult {
   currentlyTrusted: boolean | null;
+  snapshotValid: boolean;
+  /** @deprecated Use snapshotValid; this is a 0.1.x compatibility alias. */
   snapshotTrusted: boolean;
   checks: Record<string, boolean | null>;
   reasons: string[];
@@ -35,6 +39,9 @@ export interface VerifyOptions {
 export interface StatusOptions {
   fetchedUrl?: string | null;
   recordFetchedUrl?: string | null;
+  now?: Date | number;
+  maxAgeSeconds?: number;
+  maxFutureSkewSeconds?: number;
 }
 
 export function trimFieldValue(value: unknown): string;
