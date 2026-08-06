@@ -16,7 +16,6 @@ jobs:
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
-          fetch-depth: 0
           persist-credentials: false
 
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
@@ -29,12 +28,12 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          test "$(git describe --tags --exact-match)" = "$GITHUB_REF_NAME"
           test "v$(node -p "require('./package.json').version")" = "$GITHUB_REF_NAME"
-          test "$(git cat-file -t "$GITHUB_REF_NAME")" = tag
-          test "$(git rev-parse "$GITHUB_REF_NAME^{}")" = "$GITHUB_SHA"
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
           test "$(gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$GITHUB_REF_NAME" --jq .object.type)" = tag
-          test "$(gh api "repos/$GITHUB_REPOSITORY/git/tags/$(git rev-parse "$GITHUB_REF_NAME")" --jq .verification.verified)" = true
+          tag_object_sha="$(gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$GITHUB_REF_NAME" --jq .object.sha)"
+          test "$(gh api "repos/$GITHUB_REPOSITORY/git/tags/$tag_object_sha" --jq .object.sha)" = "$GITHUB_SHA"
+          test "$(gh api "repos/$GITHUB_REPOSITORY/git/tags/$tag_object_sha" --jq .verification.verified)" = true
 
       - run: npm ci
       - run: npm test

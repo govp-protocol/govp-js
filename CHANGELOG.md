@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.6 — 2026-08-06
+
+- verify the annotated release tag, signature and exact commit through GitHub's
+  API instead of relying on checkout's local lightweight tag representation;
+- keep the verifier API, protocol behavior and conformance inputs unchanged.
+
 ## 0.1.5 — 2026-08-06
 
 - fetch the complete Git tag history before enforcing the verified annotated-tag

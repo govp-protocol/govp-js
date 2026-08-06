@@ -19,7 +19,7 @@ For reproducible audits, the matching release tarball and `SHA256SUMS` are also
 published with the signed GitHub release:
 
 ```bash
-npm install https://github.com/govp-protocol/govp-js/releases/download/v0.1.5/govp-verifier-0.1.5.tgz
+npm install https://github.com/govp-protocol/govp-js/releases/download/v0.1.6/govp-verifier-0.1.6.tgz
 ```
 
 ## Verify a record
