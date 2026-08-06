@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.2 — 2026-08-06
+
+- make `npm install @govp/verifier` the primary installation path now that the
+  public `@govp` scope is active;
+- retain the signed GitHub release tarball as the reproducible audit path;
+- keep the verifier API, protocol behavior and conformance inputs unchanged.
+
 ## 0.1.1 — 2026-08-05
 
 - publish a working signed-release installation path while npm scope ownership
