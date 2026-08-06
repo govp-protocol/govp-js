@@ -23,6 +23,11 @@ jobs:
           node-version: 24
           registry-url: https://registry.npmjs.org
 
+      - name: Use a pinned OIDC-capable npm CLI
+        run: |
+          npm install --global npm@11.16.0
+          test "$(npm --version)" = 11.16.0
+
       - name: Require an exact, verified annotated tag and package version
         shell: bash
         env:
