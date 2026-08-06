@@ -1,10 +1,13 @@
 /*
  * GOVP-1 JavaScript verifier.
  *
- * This module is byte-compatible with govp-protocol/govp 0.1.10. Records are
+ * This module is byte-compatible with govp-protocol/govp 0.1.11. Records are
  * processed locally and no field is uploaded by this code.
  */
-import { verifyAsync as nobleVerify } from '@noble/ed25519';
+import { Point, hashes, verify as nobleVerify } from '@noble/ed25519';
+import { sha256, sha512 } from '@noble/hashes/sha2.js';
+
+hashes.sha512 = sha512;
 
 const encoder = new TextEncoder();
 const RECORD_DOMAIN = 'GOVP::record.v1\0';
@@ -111,6 +114,23 @@ function normalizeFields(fields) {
   return normalized;
 }
 
+function normalizeJsonFields(fields) {
+  const normalized = {};
+  const sources = new Map();
+  for (const [rawKey, rawValue] of Object.entries(fields)) {
+    const normalizedKey = normalizeFieldName(rawKey);
+    const canonicalKey = LEGACY[normalizedKey] || normalizedKey;
+    if (sources.has(canonicalKey)) {
+      throw new TypeError(
+        `JSON record contains colliding normalized field names: ${JSON.stringify(sources.get(canonicalKey))} and ${JSON.stringify(rawKey)}`,
+      );
+    }
+    sources.set(canonicalKey, rawKey);
+    normalized[canonicalKey] = trimFieldValue(rawValue);
+  }
+  return normalized;
+}
+
 function validUriCharacters(value) {
   for (let index = 0; index < value.length;) {
     const character = value[index];
@@ -196,6 +216,17 @@ function validRfc3339Utc(value) {
   return second >= 0 && second <= 59;
 }
 
+function rfc3339UtcMilliseconds(value) {
+  if (!validRfc3339Utc(value)) return null;
+  const match = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.(\d+))?Z$/.exec(value);
+  const [year, month, day, hour, minute, second] = match.slice(1, 7).map(Number);
+  const milliseconds = Number((match[7] || '').padEnd(3, '0').slice(0, 3));
+  const date = new Date(0);
+  date.setUTCFullYear(year, month - 1, day);
+  date.setUTCHours(hour, minute, Math.min(second, 59), milliseconds);
+  return date.getTime() + (second === 60 ? 1000 : 0);
+}
+
 function validFormat(fields) {
   try {
     validateSignableFields(fields);
@@ -226,7 +257,7 @@ function hexadecimal(buffer) {
 }
 
 async function sha256Hex(bytes) {
-  return hexadecimal(await crypto.subtle.digest('SHA-256', bytes));
+  return hexadecimal(sha256(bytes));
 }
 
 function concatenate(first, second) {
@@ -278,7 +309,7 @@ export function loadJsonRecord(payload) {
     throw new TypeError('JSON record field names and values must be strings');
   }
   validateSignableFields(record);
-  const fields = normalizeFields(record);
+  const fields = normalizeJsonFields(record);
   validateSignableFields(fields);
   if (bundle !== null && !bundleMatches(bundle, fields)) {
     throw new TypeError('JSON bundle asset must match the signed record');
@@ -306,17 +337,21 @@ export async function deriveGovpId(assetType, assetId, assetSha256) {
   return `GOVP-${TYPECODE[normalizedType]}-${digest.slice(0, 12)}`;
 }
 
-let nativeEd25519 = null;
-
-async function supportsNativeEd25519() {
-  if (nativeEd25519 !== null) return nativeEd25519;
-  try {
-    await crypto.subtle.importKey('raw', new Uint8Array(32), { name: 'Ed25519' }, false, ['verify']);
-    nativeEd25519 = true;
-  } catch {
-    nativeEd25519 = false;
+function littleEndianInteger(bytes) {
+  let result = 0n;
+  for (let index = bytes.length - 1; index >= 0; index -= 1) {
+    result = (result << 8n) | BigInt(bytes[index]);
   }
-  return nativeEd25519;
+  return result;
+}
+
+function strictPrimeSubgroupPoint(bytes) {
+  try {
+    const point = Point.fromBytes(bytes, false);
+    return !point.isSmallOrder() && point.isTorsionFree();
+  } catch {
+    return false;
+  }
 }
 
 export async function verifyRecordSignature(fields) {
@@ -329,30 +364,17 @@ export async function verifyRecordSignature(fields) {
   } catch {
     return false;
   }
-  if (await supportsNativeEd25519()) {
-    try {
-      const publicKey = await crypto.subtle.importKey(
-        'raw',
-        decodeBase64(normalized['public-key']),
-        { name: 'Ed25519' },
-        false,
-        ['verify'],
-      );
-      return await crypto.subtle.verify(
-        { name: 'Ed25519' },
-        publicKey,
-        decodeBase64(normalized.signature),
-        message,
-      );
-    } catch {
-      // Fall through to the vendored, audited implementation.
-    }
-  }
   try {
+    const publicKey = decodeBase64(normalized['public-key']);
+    const signature = decodeBase64(normalized.signature);
+    if (!strictPrimeSubgroupPoint(publicKey)
+        || !strictPrimeSubgroupPoint(signature.subarray(0, 32))
+        || littleEndianInteger(signature.subarray(32)) >= Point.CURVE().n) return false;
     return await nobleVerify(
-      decodeBase64(normalized.signature),
+      signature,
       message,
-      decodeBase64(normalized['public-key']),
+      publicKey,
+      { zip215: false },
     );
   } catch {
     return false;
@@ -437,7 +459,8 @@ export async function verifyFields(fields, { fetchedUrl = null, assetBytes = nul
     assetSha256,
     warnings: presentationWarnings(fields),
     bundle: bundleOk,
-    native: nativeEd25519,
+    native: false,
+    backend: '@noble/ed25519@3.1.0-strict',
   };
 }
 
@@ -539,10 +562,29 @@ async function validStatusFormat(status) {
 export async function evaluateStatus(
   fields,
   status,
-  { fetchedUrl = null, recordFetchedUrl = null } = {},
+  {
+    fetchedUrl = null,
+    recordFetchedUrl = null,
+    now = Date.now(),
+    maxAgeSeconds = 300,
+    maxFutureSkewSeconds = 60,
+  } = {},
 ) {
+  if (!Number.isFinite(maxAgeSeconds) || maxAgeSeconds < 0
+      || !Number.isFinite(maxFutureSkewSeconds) || maxFutureSkewSeconds < 0) {
+    throw new TypeError('status freshness windows must be finite and non-negative');
+  }
+  const evaluationTime = now instanceof Date ? now.getTime() : Number(now);
+  if (!Number.isFinite(evaluationTime)) {
+    throw new TypeError('status evaluation time must be a Date or millisecond timestamp');
+  }
   const core = await verifyFields(fields, { fetchedUrl: recordFetchedUrl });
+  const normalized = core.fields;
   const statusFormat = await validStatusFormat(status);
+  const generatedAt = statusFormat ? rfc3339UtcMilliseconds(status.generated_at) : null;
+  const statusFresh = generatedAt !== null
+    && generatedAt >= evaluationTime - maxAgeSeconds * 1000
+    && generatedAt <= evaluationTime + maxFutureSkewSeconds * 1000;
   const statusCanonical = fetchedUrl === null
     ? null
     : Boolean(
@@ -550,36 +592,40 @@ export async function evaluateStatus(
       && normalizeCanonical(status.canonical) === normalizeCanonical(fetchedUrl),
     );
   const sameOrigin = Boolean(
-    statusFormat && httpsOrigin(fields.canonical) === httpsOrigin(status.canonical),
+    statusFormat && httpsOrigin(normalized.canonical) === httpsOrigin(status.canonical),
   );
   const keyActive = Boolean(
     statusFormat && status.keys.some((entry) => (
-      entry.public_key === fields['public-key'] && entry.state === 'active'
+      entry.public_key === normalized['public-key'] && entry.state === 'active'
     )),
   );
   const recordNotRevoked = Boolean(
-    statusFormat && !status.revoked_records.some((entry) => (
-      entry.govp_id === fields['govp-id']
+    statusFormat && Boolean(normalized['govp-id']) && !status.revoked_records.some((entry) => (
+      entry.govp_id === normalized['govp-id']
     )),
   );
   const checks = {
     core: core.ok,
     'status-format': statusFormat,
+    'status-fresh': statusFresh,
     'status-canonical': statusCanonical,
     'same-origin': sameOrigin,
     'key-active': keyActive,
     'record-not-revoked': recordNotRevoked,
   };
-  const snapshotTrusted = core.ok
+  const snapshotValid = core.ok
     && statusFormat
     && sameOrigin
     && keyActive
     && recordNotRevoked;
   const online = fetchedUrl !== null && recordFetchedUrl !== null;
-  const currentlyTrusted = online ? snapshotTrusted && statusCanonical === true : null;
+  const currentlyTrusted = online
+    ? snapshotValid && statusFresh && statusCanonical === true
+    : null;
   return {
     currentlyTrusted,
-    snapshotTrusted,
+    snapshotValid,
+    snapshotTrusted: snapshotValid,
     checks,
     reasons: Object.entries(checks)
       .filter(([, value]) => value === false)

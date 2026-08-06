@@ -1,6 +1,6 @@
 {
   "name": "@govp/verifier",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "Environment-neutral JavaScript verifier for GOVP-1 and GOVP-STATUS-1",
   "type": "module",
   "main": "./src/index.js",
@@ -16,6 +16,7 @@
   "files": [
     "src",
     "conformance",
+    "tests",
     "CHANGELOG.md",
     "LICENSE",
     "NOTICE",
@@ -53,6 +54,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@noble/ed25519": "3.1.0"
+    "@noble/ed25519": "3.1.0",
+    "@noble/hashes": "2.2.0"
   }
 }
