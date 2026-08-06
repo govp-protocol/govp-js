@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.3 — 2026-08-06
+
+- publish through npm Trusted Publishing with GitHub Actions OIDC and
+  registry provenance;
+- disallow token-based publication through the package access policy;
+- keep the verifier API, protocol behavior and conformance inputs unchanged.
+
 ## 0.1.2 — 2026-08-06
 
 - make `npm install @govp/verifier` the primary installation path now that the
