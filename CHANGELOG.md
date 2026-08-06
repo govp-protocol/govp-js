@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.4 — 2026-08-06
+
+- publish only from a verified annotated Git tag, using npm Trusted Publishing
+  with GitHub Actions OIDC and automatic registry provenance;
+- remove the manual workflow trigger that can produce an OIDC workflow-name
+  mismatch at npm;
+- keep the verifier API, protocol behavior and conformance inputs unchanged.
+
 ## 0.1.3 — 2026-08-06
 
 - publish through npm Trusted Publishing with GitHub Actions OIDC and

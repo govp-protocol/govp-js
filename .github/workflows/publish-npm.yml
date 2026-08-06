@@ -1,12 +1,9 @@
 name: publish npm
 
 on:
-  workflow_dispatch:
-    inputs:
-      tag:
-        description: Signed release tag to publish
-        required: true
-        default: v0.1.3
+  push:
+    tags:
+      - 'v*'
 
 permissions:
   contents: read
@@ -19,22 +16,26 @@ jobs:
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
-          ref: ${{ inputs.tag }}
           persist-credentials: false
 
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 24
           registry-url: https://registry.npmjs.org
-          cache: npm
 
-      - name: Require exact signed tag and package version
+      - name: Require an exact, verified annotated tag and package version
         shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
-          test "$(git describe --tags --exact-match)" = "${{ inputs.tag }}"
-          test "v$(node -p "require('./package.json').version")" = "${{ inputs.tag }}"
+          test "$(git describe --tags --exact-match)" = "$GITHUB_REF_NAME"
+          test "v$(node -p "require('./package.json').version")" = "$GITHUB_REF_NAME"
+          test "$(git cat-file -t "$GITHUB_REF_NAME")" = tag
+          test "$(git rev-parse "$GITHUB_REF_NAME^{}")" = "$GITHUB_SHA"
+          test "$(gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$GITHUB_REF_NAME" --jq .object.type)" = tag
+          test "$(gh api "repos/$GITHUB_REPOSITORY/git/tags/$(git rev-parse "$GITHUB_REF_NAME")" --jq .verification.verified)" = true
 
       - run: npm ci
       - run: npm test
       - run: npm audit --audit-level=low
-      - run: npm publish --provenance
+      - run: npm publish
