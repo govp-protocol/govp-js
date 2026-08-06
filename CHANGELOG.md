@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.7 — 2026-08-06
+
+- pin and assert npm CLI 11.16.0 before publication so Trusted Publishing OIDC
+  support does not depend on the CLI bundled with the selected Node release;
+- keep the verifier API, protocol behavior and conformance inputs unchanged.
+
 ## 0.1.6 — 2026-08-06
 
 - verify the annotated release tag, signature and exact commit through GitHub's
