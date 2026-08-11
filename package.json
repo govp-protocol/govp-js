@@ -1,7 +1,7 @@
 {
   "name": "@govp/verifier",
-  "version": "0.1.9",
-  "description": "Environment-neutral JavaScript verifier for GOVP-1 and GOVP-STATUS-1",
+  "version": "0.1.10",
+  "description": "Environment-neutral JavaScript verifier for GOVP records, evidence and publication proofs",
   "type": "module",
   "main": "./src/index.js",
   "types": "./src/index.d.ts",

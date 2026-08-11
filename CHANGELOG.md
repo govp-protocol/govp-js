@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.10 — 2026-08-11
+
+- add an environment-neutral verifier and builder for the static
+  `org.govp.publication-batch/1` 256-shard RFC 6962 tree;
+- reproduce Python roots and inclusion-proof bytes exactly for 7 and 10,000
+  events and reject descriptor, shard and path tampering;
+- export complete TypeScript declarations for publication descriptors, proofs,
+  builders and verifiers without adding network behavior.
+
 ## 0.1.9 — 2026-08-11
 
 - add environment-neutral GOVP-EXT-1 evidence-envelope verification;
