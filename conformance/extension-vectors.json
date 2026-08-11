@@ -1,0 +1,441 @@
+{
+  "domain": "GOVP::extension-envelope.v1\\0",
+  "format": "GOVP-EXT-CONFORMANCE-1",
+  "vectors": [
+    {
+      "envelope": {
+        "created_at": "2026-08-11T12:00:00Z",
+        "evidence": [
+          {
+            "digest": "sha256:795001a89a6aa893c1c00ae55d1e3948879c8ec6032abecfba39d7f7b8172bfc",
+            "id": "TEST-LOT-0042",
+            "locator": "https://lab.example/evidence/TEST-LOT-0042.json",
+            "type": "org.govp.test-result/1"
+          }
+        ],
+        "extension": {
+          "id": "org.govp.conformance",
+          "version": "1.0.0"
+        },
+        "govp": "GOVP-EXT-1",
+        "hash": {
+          "alg": "sha256",
+          "value": "2f7a9a0ae606db72ed2e6edc9ec0fc7be466b1b13d13a8f900dbe3636de7de04"
+        },
+        "id": "CONFORMANCE-SLSA-0001",
+        "issuer": {
+          "canonical": "https://receiver.example/.well-known/govp.txt",
+          "name": "Receiver Example"
+        },
+        "origin": {
+          "observation": {
+            "event": "lot_received",
+            "source": "dock-scanner-7"
+          },
+          "observed_by": "receiver-gate/1.0.0",
+          "origin": "system_observed"
+        },
+        "payload": {
+          "accepted_quantity": 120,
+          "control": "visual-inspection",
+          "passed": true
+        },
+        "references": [
+          {
+            "digest": "sha256:f2a88b28192219e7e45797cb94b75211ed2c32ad8cd7106699c7151bdd98a23b",
+            "format": "application/vnd.in-toto+json",
+            "locator": "https://supplier.example/attestations/LOT-0042.intoto.json",
+            "type": "external_attestation"
+          }
+        ],
+        "signature": {
+          "alg": "Ed25519",
+          "key_id": "sha256:56475aa75463474c0285df5dbf2bcab73da651358839e9b77481b2eab107708c",
+          "public_key": "A6EHv/POEL4dcN0Y50vAmWfk1jCbpQ1fHdyGZBJVMbg=",
+          "signing_input_sha256": "981f3d6f621322e400c3259f3092770b73342b97864cf62955c60692f69edcf1",
+          "value": "MOkYcRDWHJvVSsrn8aMC3n7cNdZbdBAnJAWNsvIMyVNUMHTpAaGocgrU+hUY0aZZSScEl7hm2JNI8AaW5EcFBg=="
+        },
+        "subject": {
+          "id": "LOT-0042",
+          "type": "supplier-lot"
+        },
+        "type": "org.govp.conformance-envelope/1"
+      },
+      "expected": {
+        "format": true,
+        "key-id": true,
+        "origin": true,
+        "references": true,
+        "signature": true,
+        "signing-input": true,
+        "signing_input_sha256": "981f3d6f621322e400c3259f3092770b73342b97864cf62955c60692f69edcf1",
+        "subject": true,
+        "valid": true
+      },
+      "name": "01-valid-slsa-reference",
+      "subject_base64": "TE9ULTAwNDIK"
+    },
+    {
+      "envelope": {
+        "created_at": "2026-08-11T12:00:00Z",
+        "evidence": [
+          {
+            "digest": "sha256:795001a89a6aa893c1c00ae55d1e3948879c8ec6032abecfba39d7f7b8172bfc",
+            "id": "TEST-LOT-0042",
+            "locator": "https://lab.example/evidence/TEST-LOT-0042.json",
+            "type": "org.govp.test-result/1"
+          }
+        ],
+        "extension": {
+          "id": "org.govp.conformance",
+          "version": "1.0.0"
+        },
+        "govp": "GOVP-EXT-1",
+        "hash": {
+          "alg": "sha256",
+          "value": "2f7a9a0ae606db72ed2e6edc9ec0fc7be466b1b13d13a8f900dbe3636de7de04"
+        },
+        "id": "CONFORMANCE-SLSA-0001",
+        "issuer": {
+          "canonical": "https://receiver.example/.well-known/govp.txt",
+          "name": "Receiver Example"
+        },
+        "origin": {
+          "observation": {
+            "event": "lot_received",
+            "source": "dock-scanner-7"
+          },
+          "observed_by": "receiver-gate/1.0.0",
+          "origin": "system_observed"
+        },
+        "payload": {
+          "accepted_quantity": 120,
+          "control": "visual-inspection",
+          "passed": true
+        },
+        "references": [
+          {
+            "digest": "sha256:f2a88b28192219e7e45797cb94b75211ed2c32ad8cd7106699c7151bdd98a23b",
+            "format": "application/vnd.in-toto+json",
+            "locator": "https://supplier.example/attestations/LOT-0042.intoto.json",
+            "type": "external_attestation"
+          }
+        ],
+        "signature": {
+          "alg": "Ed25519",
+          "key_id": "sha256:56475aa75463474c0285df5dbf2bcab73da651358839e9b77481b2eab107708c",
+          "public_key": "A6EHv/POEL4dcN0Y50vAmWfk1jCbpQ1fHdyGZBJVMbg=",
+          "signing_input_sha256": "981f3d6f621322e400c3259f3092770b73342b97864cf62955c60692f69edcf1",
+          "value": "MOkYcRDWHJvVSsrn8aMC3n7cNdZbdBAnJAWNsvIMyVNUMHTpAaGocgrU+hUY0aZZSScEl7hm2JNI8AaW5EcFBg=="
+        },
+        "subject": {
+          "id": "LOT-0042",
+          "type": "supplier-lot"
+        },
+        "type": "org.govp.conformance-envelope/1"
+      },
+      "expected": {
+        "format": true,
+        "key-id": true,
+        "origin": true,
+        "references": true,
+        "signature": true,
+        "signing-input": true,
+        "signing_input_sha256": "981f3d6f621322e400c3259f3092770b73342b97864cf62955c60692f69edcf1",
+        "subject": false,
+        "valid": false
+      },
+      "name": "02-tampered-subject",
+      "subject_base64": "TE9ULTk5OTkK"
+    },
+    {
+      "envelope": {
+        "created_at": "2026-08-11T12:00:00Z",
+        "evidence": [
+          {
+            "digest": "sha256:795001a89a6aa893c1c00ae55d1e3948879c8ec6032abecfba39d7f7b8172bfc",
+            "id": "TEST-LOT-0042",
+            "locator": "https://lab.example/evidence/TEST-LOT-0042.json",
+            "type": "org.govp.test-result/1"
+          }
+        ],
+        "extension": {
+          "id": "org.govp.conformance",
+          "version": "1.0.0"
+        },
+        "govp": "GOVP-EXT-1",
+        "hash": {
+          "alg": "sha256",
+          "value": "2f7a9a0ae606db72ed2e6edc9ec0fc7be466b1b13d13a8f900dbe3636de7de04"
+        },
+        "id": "CONFORMANCE-SLSA-0001",
+        "issuer": {
+          "canonical": "https://receiver.example/.well-known/govp.txt",
+          "name": "Receiver Example"
+        },
+        "origin": {
+          "observation": null,
+          "observed_by": "receiver-gate/1.0.0",
+          "origin": "system_observed"
+        },
+        "payload": {
+          "accepted_quantity": 120,
+          "control": "visual-inspection",
+          "passed": true
+        },
+        "references": [
+          {
+            "digest": "sha256:f2a88b28192219e7e45797cb94b75211ed2c32ad8cd7106699c7151bdd98a23b",
+            "format": "application/vnd.in-toto+json",
+            "locator": "https://supplier.example/attestations/LOT-0042.intoto.json",
+            "type": "external_attestation"
+          }
+        ],
+        "signature": {
+          "alg": "Ed25519",
+          "key_id": "sha256:56475aa75463474c0285df5dbf2bcab73da651358839e9b77481b2eab107708c",
+          "public_key": "A6EHv/POEL4dcN0Y50vAmWfk1jCbpQ1fHdyGZBJVMbg=",
+          "signing_input_sha256": "981f3d6f621322e400c3259f3092770b73342b97864cf62955c60692f69edcf1",
+          "value": "MOkYcRDWHJvVSsrn8aMC3n7cNdZbdBAnJAWNsvIMyVNUMHTpAaGocgrU+hUY0aZZSScEl7hm2JNI8AaW5EcFBg=="
+        },
+        "subject": {
+          "id": "LOT-0042",
+          "type": "supplier-lot"
+        },
+        "type": "org.govp.conformance-envelope/1"
+      },
+      "expected": {
+        "format": false,
+        "key-id": null,
+        "origin": false,
+        "references": false,
+        "signature": null,
+        "signing-input": null,
+        "signing_input_sha256": null,
+        "subject": null,
+        "valid": false
+      },
+      "name": "03-system-origin-without-observation",
+      "subject_base64": "TE9ULTAwNDIK"
+    },
+    {
+      "envelope": {
+        "created_at": "2026-08-11T12:00:00Z",
+        "evidence": [
+          {
+            "digest": "sha256:795001a89a6aa893c1c00ae55d1e3948879c8ec6032abecfba39d7f7b8172bfc",
+            "id": "TEST-LOT-0042",
+            "locator": "https://lab.example/evidence/TEST-LOT-0042.json",
+            "type": "org.govp.test-result/1"
+          }
+        ],
+        "extension": {
+          "id": "org.govp.conformance",
+          "version": "1.0.0"
+        },
+        "govp": "GOVP-EXT-1",
+        "hash": {
+          "alg": "sha256",
+          "value": "2f7a9a0ae606db72ed2e6edc9ec0fc7be466b1b13d13a8f900dbe3636de7de04"
+        },
+        "id": "CONFORMANCE-SLSA-0001",
+        "issuer": {
+          "canonical": "https://receiver.example/.well-known/govp.txt",
+          "name": "Receiver Example"
+        },
+        "origin": {
+          "observation": {
+            "event": "lot_received",
+            "source": "dock-scanner-7"
+          },
+          "observed_by": "receiver-gate/1.0.0",
+          "origin": "system_observed"
+        },
+        "payload": {
+          "accepted_quantity": 120,
+          "control": "visual-inspection",
+          "passed": true
+        },
+        "references": [
+          {
+            "digest": "sha256:F2A88B28192219E7E45797CB94B75211ED2C32AD8CD7106699C7151BDD98A23B",
+            "format": "application/vnd.in-toto+json",
+            "locator": "https://supplier.example/attestations/LOT-0042.intoto.json",
+            "type": "external_attestation"
+          }
+        ],
+        "signature": {
+          "alg": "Ed25519",
+          "key_id": "sha256:56475aa75463474c0285df5dbf2bcab73da651358839e9b77481b2eab107708c",
+          "public_key": "A6EHv/POEL4dcN0Y50vAmWfk1jCbpQ1fHdyGZBJVMbg=",
+          "signing_input_sha256": "981f3d6f621322e400c3259f3092770b73342b97864cf62955c60692f69edcf1",
+          "value": "MOkYcRDWHJvVSsrn8aMC3n7cNdZbdBAnJAWNsvIMyVNUMHTpAaGocgrU+hUY0aZZSScEl7hm2JNI8AaW5EcFBg=="
+        },
+        "subject": {
+          "id": "LOT-0042",
+          "type": "supplier-lot"
+        },
+        "type": "org.govp.conformance-envelope/1"
+      },
+      "expected": {
+        "format": false,
+        "key-id": null,
+        "origin": false,
+        "references": false,
+        "signature": null,
+        "signing-input": null,
+        "signing_input_sha256": null,
+        "subject": null,
+        "valid": false
+      },
+      "name": "04-noncanonical-external-digest",
+      "subject_base64": "TE9ULTAwNDIK"
+    },
+    {
+      "envelope": {
+        "created_at": "2026-08-11T12:00:00Z",
+        "evidence": [
+          {
+            "digest": "sha256:795001a89a6aa893c1c00ae55d1e3948879c8ec6032abecfba39d7f7b8172bfc",
+            "id": "TEST-LOT-0042",
+            "locator": "https://lab.example/evidence/TEST-LOT-0042.json",
+            "type": "org.govp.test-result/1"
+          }
+        ],
+        "extension": {
+          "id": "org.govp.conformance",
+          "version": "1.0.0"
+        },
+        "govp": "GOVP-EXT-1",
+        "hash": {
+          "alg": "sha256",
+          "value": "2f7a9a0ae606db72ed2e6edc9ec0fc7be466b1b13d13a8f900dbe3636de7de04"
+        },
+        "id": "CONFORMANCE-SLSA-0001",
+        "issuer": {
+          "canonical": "https://receiver.example/.well-known/govp.txt",
+          "name": "Receiver Example"
+        },
+        "origin": {
+          "observation": {
+            "event": "lot_received",
+            "source": "dock-scanner-7"
+          },
+          "observed_by": "receiver-gate/1.0.0",
+          "origin": "system_observed"
+        },
+        "payload": {
+          "accepted_quantity": 120,
+          "control": "visual-inspection",
+          "passed": true
+        },
+        "references": [
+          {
+            "digest": "sha256:f2a88b28192219e7e45797cb94b75211ed2c32ad8cd7106699c7151bdd98a23b",
+            "format": "application/vnd.in-toto+json",
+            "locator": "https://supplier.example/attestations/LOT-0042.intoto.json",
+            "type": "external_attestation"
+          }
+        ],
+        "signature": {
+          "alg": "Ed25519",
+          "key_id": "sha256:56475aa75463474c0285df5dbf2bcab73da651358839e9b77481b2eab107708c",
+          "public_key": "A6EHv/POEL4dcN0Y50vAmWfk1jCbpQ1fHdyGZBJVMbg=",
+          "signing_input_sha256": "981f3d6f621322e400c3259f3092770b73342b97864cf62955c60692f69edcf1",
+          "value": "MekYcRDWHJvVSsrn8aMC3n7cNdZbdBAnJAWNsvIMyVNUMHTpAaGocgrU+hUY0aZZSScEl7hm2JNI8AaW5EcFBg=="
+        },
+        "subject": {
+          "id": "LOT-0042",
+          "type": "supplier-lot"
+        },
+        "type": "org.govp.conformance-envelope/1"
+      },
+      "expected": {
+        "format": true,
+        "key-id": true,
+        "origin": true,
+        "references": true,
+        "signature": false,
+        "signing-input": true,
+        "signing_input_sha256": "981f3d6f621322e400c3259f3092770b73342b97864cf62955c60692f69edcf1",
+        "subject": true,
+        "valid": false
+      },
+      "name": "05-invalid-signature",
+      "subject_base64": "TE9ULTAwNDIK"
+    },
+    {
+      "envelope": {
+        "created_at": "2026-08-11T12:00:00Z",
+        "evidence": [
+          {
+            "digest": "sha256:795001a89a6aa893c1c00ae55d1e3948879c8ec6032abecfba39d7f7b8172bfc",
+            "id": "TEST-LOT-0042",
+            "locator": "https://lab.example/evidence/TEST-LOT-0042.json",
+            "type": "org.govp.test-result/1"
+          }
+        ],
+        "extension": {
+          "id": "org.govp.conformance",
+          "version": "1.0.0"
+        },
+        "govp": "GOVP-EXT-1",
+        "hash": {
+          "alg": "sha256",
+          "value": "2f7a9a0ae606db72ed2e6edc9ec0fc7be466b1b13d13a8f900dbe3636de7de04"
+        },
+        "id": "CONFORMANCE-SLSA-0001",
+        "issuer": {
+          "canonical": "https://receiver.example/.well-known/govp.txt",
+          "name": "Receiver Example"
+        },
+        "origin": {
+          "observation": {
+            "event": "lot_received",
+            "source": "dock-scanner-7"
+          },
+          "observed_by": "receiver-gate/1.0.0",
+          "origin": "system_observed"
+        },
+        "payload": {
+          "accepted_quantity": 120,
+          "control": "visual-inspection",
+          "passed": true
+        },
+        "references": [
+          {
+            "digest": "sha256:f2a88b28192219e7e45797cb94b75211ed2c32ad8cd7106699c7151bdd98a23b",
+            "format": "application/vnd.in-toto+json",
+            "locator": "https://supplier.example/attestations/LOT-0042.intoto.json",
+            "type": "external_attestation"
+          }
+        ],
+        "signature": {
+          "alg": "Ed25519",
+          "key_id": "sha256:56475aa75463474c0285df5dbf2bcab73da651358839e9b77481b2eab107708c",
+          "public_key": "A6EHv/POEL4dcN0Y50vAmWfk1jCbpQ1fHdyGZBJVMbg=",
+          "signing_input_sha256": "981f3d6f621322e400c3259f3092770b73342b97864cf62955c60692f69edcf1",
+          "value": "MOkYcRDWHJvVSsrn8aMC3n7cNdZbdBAnJAWNsvIMyVNUMHTpAaGocgrU+hUY0aZZSScEl7hm2JNI8AaW5EcFBg=="
+        },
+        "subject": {
+          "id": "LOT-0042",
+          "type": "supplier-lot"
+        },
+        "type": "org.govp.conformance-envelope/1"
+      },
+      "expected": {
+        "format": true,
+        "key-id": true,
+        "origin": true,
+        "references": true,
+        "signature": true,
+        "signing-input": true,
+        "signing_input_sha256": "981f3d6f621322e400c3259f3092770b73342b97864cf62955c60692f69edcf1",
+        "subject": null,
+        "valid": true
+      },
+      "name": "06-subject-bytes-not-evaluated",
+      "subject_base64": null
+    }
+  ]
+}

@@ -11,6 +11,8 @@ import {
   signingInput,
   verifyFields,
   verifyText,
+  canonicalJson,
+  verifyEnvelope,
 } from '../src/index.js';
 
 const textVectors = JSON.parse(await readFile(new URL(
@@ -21,6 +23,9 @@ const jsonVectors = JSON.parse(await readFile(new URL(
 ), 'utf8'));
 const statusVectors = JSON.parse(await readFile(new URL(
   '../conformance/status-vectors.json', import.meta.url,
+), 'utf8'));
+const extensionVectors = JSON.parse(await readFile(new URL(
+  '../conformance/extension-vectors.json', import.meta.url,
 ), 'utf8'));
 const STATUS_NOW = Date.parse('2026-08-05T22:09:00Z');
 
@@ -47,6 +52,28 @@ test('all GOVP-1 text vectors reproduce the normative results', async () => {
       `${vector.name}: signing input`,
     );
   }
+});
+
+test('all GOVP-EXT-1 vectors reproduce Python byte-exact results', async () => {
+  assert.equal(extensionVectors.domain, 'GOVP::extension-envelope.v1\\0');
+  for (const vector of extensionVectors.vectors) {
+    const result = await verifyEnvelope(vector.envelope, {
+      subjectBytes: vector.subject_base64 === null
+        ? null
+        : Buffer.from(vector.subject_base64, 'base64'),
+    });
+    const expectedChecks = Object.fromEntries(
+      Object.keys(result.checks).map((key) => [key, vector.expected[key]]),
+    );
+    assert.deepEqual(result.checks, expectedChecks, `${vector.name}: checks`);
+    assert.equal(result.ok, vector.expected.valid, `${vector.name}: validity`);
+    assert.equal(result.signingInputSha256, vector.expected.signing_input_sha256, `${vector.name}: bytes`);
+  }
+});
+
+test('extension canonical JSON has cross-language UTF-16 ordering and safe numbers', () => {
+  assert.equal(canonicalJson({ '\u{10000}': 1, '\ue000': 2 }), '{"𐀀":1,"":2}');
+  assert.throws(() => canonicalJson({ amount: 1.5 }), /safe integers/);
 });
 
 test('all GOVP-1 JSON vectors load or reject identically', async () => {

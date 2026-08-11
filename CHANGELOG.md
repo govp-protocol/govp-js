@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.9 — 2026-08-11
+
+- add environment-neutral GOVP-EXT-1 evidence-envelope verification;
+- reproduce the Python canonical signing bytes and verdicts through one shared
+  six-vector corpus, including SLSA/in-toto binding, tamper rejection and an
+  explicit not-evaluated subject check.
+
 ## 0.1.8 — 2026-08-06
 
 - fix a high-severity status bypass by applying key and revocation decisions to
