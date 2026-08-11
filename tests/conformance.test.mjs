@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import { test } from 'node:test';
 
@@ -12,6 +13,9 @@ import {
   verifyFields,
   verifyText,
   canonicalJson,
+  buildPublicationTree,
+  publicationEntryId,
+  verifyPublicationProof,
   verifyEnvelope,
 } from '../src/index.js';
 
@@ -26,6 +30,9 @@ const statusVectors = JSON.parse(await readFile(new URL(
 ), 'utf8'));
 const extensionVectors = JSON.parse(await readFile(new URL(
   '../conformance/extension-vectors.json', import.meta.url,
+), 'utf8'));
+const publicationVectors = JSON.parse(await readFile(new URL(
+  '../conformance/publication-vectors.json', import.meta.url,
 ), 'utf8'));
 const STATUS_NOW = Date.parse('2026-08-05T22:09:00Z');
 
@@ -74,6 +81,44 @@ test('all GOVP-EXT-1 vectors reproduce Python byte-exact results', async () => {
 test('extension canonical JSON has cross-language UTF-16 ordering and safe numbers', () => {
   assert.equal(canonicalJson({ '\u{10000}': 1, '\ue000': 2 }), '{"𐀀":1,"":2}');
   assert.throws(() => canonicalJson({ amount: 1.5 }), /safe integers/);
+});
+
+test('publication Merkle roots and proofs are byte-exact with Python', () => {
+  assert.equal(publicationVectors.empty_root, 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855');
+  for (const vector of publicationVectors.vectors) {
+    const descriptors = vector.descriptors ?? Array.from(
+      { length: vector.recipe.count },
+      (_, index) => {
+        const id = `${vector.recipe.id_prefix}-${String(index).padStart(5, '0')}`;
+        return {
+          id,
+          key_id: publicationVectors.key_id,
+          signing_input_sha256: createHash('sha256')
+            .update(`${vector.recipe.signing_input_prefix}${index}`)
+            .digest('hex'),
+          type: vector.recipe.type,
+        };
+      },
+    );
+    const { root, proofs } = buildPublicationTree(descriptors, vector.batch_id);
+    const selected = descriptors[vector.selected];
+    const entryId = publicationEntryId(selected);
+    assert.equal(root, vector.expected.root, `${vector.name}: root`);
+    assert.equal(entryId, vector.expected.entry_id, `${vector.name}: entry id`);
+    assert.deepEqual(proofs[entryId], vector.expected.proof, `${vector.name}: proof bytes`);
+    const envelope = {
+      id: selected.id,
+      type: selected.type,
+      signature: {
+        key_id: selected.key_id,
+        signing_input_sha256: selected.signing_input_sha256,
+      },
+    };
+    assert.equal(verifyPublicationProof(envelope, proofs[entryId], root), true);
+    assert.equal(verifyPublicationProof(
+      { ...envelope, id: `${envelope.id}-tampered` }, proofs[entryId], root,
+    ), false);
+  }
 });
 
 test('all GOVP-1 JSON vectors load or reject identically', async () => {

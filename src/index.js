@@ -1,13 +1,31 @@
 /*
  * GOVP-1 JavaScript verifier.
  *
- * This module is byte-compatible with govp-protocol/govp 0.1.12. Records are
+ * This module is byte-compatible with govp-protocol/govp 0.1.13. Records are
  * processed locally and no field is uploaded by this code.
  */
 import { Point, hashes, verify as nobleVerify } from '@noble/ed25519';
 import { sha256, sha512 } from '@noble/hashes/sha2.js';
 import { ENVELOPE_DOMAIN, canonicalJson, envelopeSigningInput, verifyEnvelope } from './envelope.js';
+import {
+  EMPTY_PUBLICATION_ROOT,
+  buildPublicationTree,
+  eventDescriptor,
+  merkleRoot,
+  publicationEntryId,
+  publicationLeaf,
+  verifyPublicationProof,
+} from './publication.js';
 export { ENVELOPE_DOMAIN, canonicalJson, envelopeSigningInput, verifyEnvelope };
+export {
+  EMPTY_PUBLICATION_ROOT,
+  buildPublicationTree,
+  eventDescriptor,
+  merkleRoot,
+  publicationEntryId,
+  publicationLeaf,
+  verifyPublicationProof,
+};
 
 hashes.sha512 = sha512;
 
@@ -636,23 +654,30 @@ export async function evaluateStatus(
 }
 
 export const GOVP = {
+  EMPTY_PUBLICATION_ROOT,
   ENVELOPE_DOMAIN,
   RECORD_DOMAIN,
   TYPECODE,
   deriveGovpId,
   deriveKeyId,
   canonicalJson,
+  buildPublicationTree,
   envelopeSigningInput,
+  eventDescriptor,
   evaluateStatus,
   loadJsonRecord,
   normalizeCanonical,
   normalizeFieldName,
   parseRecord,
   parseStatus,
+  merkleRoot,
+  publicationEntryId,
+  publicationLeaf,
   signingInput,
   trimFieldValue,
   verifyFields,
   verifyEnvelope,
+  verifyPublicationProof,
   verifyRecordSignature,
   verifyText,
 };

@@ -1,0 +1,189 @@
+{
+  "algorithm": "sha256-rfc6962-sharded-256",
+  "empty_root": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "format": "GOVP-PUBLICATION-CONFORMANCE-1",
+  "key_id": "sha256:530274eeeddb0f5b90cbb63071b838effef1dd8f6f386ae27e4e39341343409d",
+  "vectors": [
+    {
+      "batch_id": "VECTOR-SMALL",
+      "descriptors": [
+        {
+          "id": "EVENT-00000",
+          "key_id": "sha256:530274eeeddb0f5b90cbb63071b838effef1dd8f6f386ae27e4e39341343409d",
+          "signing_input_sha256": "ac366dcba84fede38ff3f94e4d4b727c7a358857f84c2f5d41f4d59f405a4f1b",
+          "type": "org.govp.build/1"
+        },
+        {
+          "id": "EVENT-00001",
+          "key_id": "sha256:530274eeeddb0f5b90cbb63071b838effef1dd8f6f386ae27e4e39341343409d",
+          "signing_input_sha256": "37a1fc85ca152a4bba7327ad930e4ad94d468e5ee553cfd80a794e9907178ab1",
+          "type": "org.govp.build/1"
+        },
+        {
+          "id": "EVENT-00002",
+          "key_id": "sha256:530274eeeddb0f5b90cbb63071b838effef1dd8f6f386ae27e4e39341343409d",
+          "signing_input_sha256": "2a34a3752c7f55d57eff00c7e8af0090baa1961c805f910adccba81dc4dce6c0",
+          "type": "org.govp.build/1"
+        },
+        {
+          "id": "EVENT-00003",
+          "key_id": "sha256:530274eeeddb0f5b90cbb63071b838effef1dd8f6f386ae27e4e39341343409d",
+          "signing_input_sha256": "6bfb7fb1041b43e266e7e1187bf4387343e826d0ebf84e2269cafafad330e554",
+          "type": "org.govp.build/1"
+        },
+        {
+          "id": "EVENT-00004",
+          "key_id": "sha256:530274eeeddb0f5b90cbb63071b838effef1dd8f6f386ae27e4e39341343409d",
+          "signing_input_sha256": "3734af9475ccc26be370785459cae8aeeb023db9c451f28407680f51cb4d2f5f",
+          "type": "org.govp.build/1"
+        },
+        {
+          "id": "EVENT-00005",
+          "key_id": "sha256:530274eeeddb0f5b90cbb63071b838effef1dd8f6f386ae27e4e39341343409d",
+          "signing_input_sha256": "a17db58c5c08549c4dd8516b7d883d2897d9d5ca3894f4fe41942b4e756daff8",
+          "type": "org.govp.build/1"
+        },
+        {
+          "id": "EVENT-00006",
+          "key_id": "sha256:530274eeeddb0f5b90cbb63071b838effef1dd8f6f386ae27e4e39341343409d",
+          "signing_input_sha256": "5b9039ed6f7ebc6d5d6c504f79725f49e1b1a9a3110c7122f42287d393816e2b",
+          "type": "org.govp.build/1"
+        }
+      ],
+      "expected": {
+        "entry_id": "ab99b97d92b5c9ad0c0d3bfcf895c1f1dcd88732904ea78a434084d72518f4fb",
+        "proof": {
+          "batch_id": "VECTOR-SMALL",
+          "descriptor": {
+            "id": "EVENT-00003",
+            "key_id": "sha256:530274eeeddb0f5b90cbb63071b838effef1dd8f6f386ae27e4e39341343409d",
+            "signing_input_sha256": "6bfb7fb1041b43e266e7e1187bf4387343e826d0ebf84e2269cafafad330e554",
+            "type": "org.govp.build/1"
+          },
+          "entry_id": "ab99b97d92b5c9ad0c0d3bfcf895c1f1dcd88732904ea78a434084d72518f4fb",
+          "intra_proof": [],
+          "root": "ae6c6ed82b809eadfebb793563f7b4ffe130f613ee759fedd5042212e7f1fad3",
+          "shard": 251,
+          "shard_root": "cbab65c6d40b2411f72e9b161ad73132bfe77e65a681ce3bedce3fc195128ce3",
+          "top_proof": [
+            [
+              "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              false
+            ],
+            [
+              "a68ee79dc12813d134fd035c7328f7bd5ee68187735f7f0d2e451aea3ff6930f",
+              false
+            ],
+            [
+              "905e5783421ee97400a05d92dae5289a5d689e527e8d1b3fba314226e725f3e5",
+              true
+            ],
+            [
+              "57fda7f49b727e354d82f0c79adc240e0e3edaa70d53426cd890fd9cf713e657",
+              false
+            ],
+            [
+              "d40721182a32283a783409ac60b617f7530b0fa8a1fe07cf269d924af02cbe36",
+              false
+            ],
+            [
+              "80914357a2bd0ef2524d94543a91d0e6c9f7fb8fbde381e1acb1b17116c0959c",
+              false
+            ],
+            [
+              "017bcfd51ad5334881ee844c805c0025b7b259ec0bde0fce07456f12f7f7196b",
+              false
+            ],
+            [
+              "0ab6079c196736afe15697d5cd986f52be6d6e55ace09e09b0a17d711c378e82",
+              false
+            ]
+          ]
+        },
+        "root": "ae6c6ed82b809eadfebb793563f7b4ffe130f613ee759fedd5042212e7f1fad3"
+      },
+      "name": "seven-events",
+      "selected": 3
+    },
+    {
+      "batch_id": "VECTOR-10000",
+      "expected": {
+        "entry_id": "c4cea945f716473958ac2d912438a98361a51834145df135d8a266eb67cf4a53",
+        "proof": {
+          "batch_id": "VECTOR-10000",
+          "descriptor": {
+            "id": "LARGE-06789",
+            "key_id": "sha256:530274eeeddb0f5b90cbb63071b838effef1dd8f6f386ae27e4e39341343409d",
+            "signing_input_sha256": "ea8381ce7ec0454a8585728dd80bfdd27d758b845c930d2b55a28c63daf0580e",
+            "type": "org.govp.build/1"
+          },
+          "entry_id": "c4cea945f716473958ac2d912438a98361a51834145df135d8a266eb67cf4a53",
+          "intra_proof": [
+            [
+              "79c77539a907fb2598c2583a5cc89004472c16ec18086db9463b94d103ceb233",
+              true
+            ],
+            [
+              "d75808cf6d6415e361a79f34d193cbeaa06b78d3aeba42c1e774f25067af9969",
+              true
+            ],
+            [
+              "cc3d490391a7e9659ea4d21a9d65bd08d656f783ac87beb4d5940c05b400ad35",
+              true
+            ],
+            [
+              "226d9668d10284ecac4b66fd2275cd46a44900958c37852c2cc7e8ea3b5911a7",
+              false
+            ]
+          ],
+          "root": "66b64033d74b50837c7d0828a08ef8ac4a5731e3ed345f839079a5d036eaa3ee",
+          "shard": 83,
+          "shard_root": "afc423f96bd7244309d65d3acdaf4c0612bbc3417a4d4508f5b020e2e367637f",
+          "top_proof": [
+            [
+              "e11ba0fb57569b77720041cb2152ab1aaaa9725c810a90043ef69923721ee9f0",
+              false
+            ],
+            [
+              "8ef9425ef69df9b85f1923a3b73858998b9c48e2c7e2d711ef50226d06a9e392",
+              false
+            ],
+            [
+              "57f939d15e613763d495bd073958248cb3df6f3abc754eb4c364c6b404268819",
+              true
+            ],
+            [
+              "9897c332d58f81e027c4ac13c25e045f06acd6097f326479efeca2ce84e433cb",
+              true
+            ],
+            [
+              "ce1d61a89be56f11d10032af0ef492d2b12acbe5143fff9090cdfc5d38dd4718",
+              false
+            ],
+            [
+              "9b202ea706547e534d14ebee73390117558ab7f3680c2b0d9e1c97e91df5c114",
+              true
+            ],
+            [
+              "52b7d998d9434914bf6fe57d1a78877c9367f42ffd1fd8978bdaaf3216b9c5d2",
+              false
+            ],
+            [
+              "b79d170a5ce756320c207063f25d9ce8968afb30266f424a32264c4ca5a40cc4",
+              true
+            ]
+          ]
+        },
+        "root": "66b64033d74b50837c7d0828a08ef8ac4a5731e3ed345f839079a5d036eaa3ee"
+      },
+      "name": "ten-thousand-events",
+      "recipe": {
+        "count": 10000,
+        "id_prefix": "LARGE",
+        "signing_input_prefix": "signing-input-",
+        "type": "org.govp.build/1"
+      },
+      "selected": 6789
+    }
+  ]
+}

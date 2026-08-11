@@ -4,7 +4,8 @@ Environment-neutral JavaScript verification for the open GOVP protocol.
 It independently implements GOVP-1 parsing, signing bytes, Ed25519 verification,
 GOVP-ID derivation, asset binding, canonical URL checks and GOVP-STATUS-1.
 It also verifies GOVP-EXT-1 signed evidence envelopes with the same byte-exact
-canonical input as the Python reference implementation.
+canonical input as the Python reference implementation. It also rebuilds and
+verifies `org.govp.publication-batch/1` Merkle inclusion proofs locally.
 
 The package works in modern browsers and Node.js 20 or newer. It does not send
 records, assets or results to GOVP.
@@ -21,7 +22,7 @@ For reproducible audits, the matching release tarball and `SHA256SUMS` are also
 published with the signed GitHub release:
 
 ```bash
-npm install https://github.com/govp-protocol/govp-js/releases/download/v0.1.9/govp-verifier-0.1.9.tgz
+npm install https://github.com/govp-protocol/govp-js/releases/download/v0.1.10/govp-verifier-0.1.10.tgz
 ```
 
 ## Verify a record
@@ -78,6 +79,20 @@ This operation is local. It verifies the signature, deterministic signing
 input, subject digest, declared origin and registered reference shapes; it does
 not fetch or independently validate external attestations.
 
+## Verify a static publication proof
+
+```js
+import { verifyEnvelope, verifyPublicationProof } from '@govp/verifier';
+
+if (!(await verifyEnvelope(envelope)).ok) throw new Error('invalid envelope');
+if (!verifyPublicationProof(envelope, proof, batch.payload.root)) {
+  throw new Error('event is not included in the signed batch');
+}
+```
+
+The verifier binds the signed event descriptor to its shard, reconstructs both
+RFC 6962 paths and compares the exact batch root. It performs no network call.
+
 ## Conformance
 
 The npm package contains the exact public vectors under exported paths:
@@ -88,8 +103,8 @@ import vectors from '@govp/verifier/conformance/vectors.json' with { type: 'json
 
 Run the implementation suite with `npm test`; the tests are included in the
 published package, so this command also works after a registry install. The
-suite tests every GOVP-1 vector, GOVP-STATUS-1 and the shared GOVP-EXT-1
-byte-exact corpus.
+suite tests every GOVP-1 vector, GOVP-STATUS-1, the shared GOVP-EXT-1 corpus and
+the exact Python publication roots and proofs for 7 and 10,000 events.
 
 Specification and documentation: [govp.io](https://govp.io)  
 Python reference implementation: [`govp`](https://pypi.org/project/govp/)  

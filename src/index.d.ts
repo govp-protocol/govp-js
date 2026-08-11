@@ -37,6 +37,41 @@ export interface EnvelopeResult {
   warnings: string[];
 }
 
+export interface PublicationDescriptor {
+  id: string;
+  key_id: string;
+  signing_input_sha256: string;
+  type: string;
+}
+
+export type PublicationProofStep = [hash: string, siblingOnRight: boolean];
+
+export interface PublicationProof {
+  batch_id: string;
+  descriptor: PublicationDescriptor;
+  entry_id: string;
+  intra_proof: PublicationProofStep[];
+  root: string;
+  shard: number;
+  shard_root: string;
+  top_proof: PublicationProofStep[];
+}
+
+export const EMPTY_PUBLICATION_ROOT: string;
+export function eventDescriptor(envelope: Record<string, unknown>): PublicationDescriptor;
+export function publicationEntryId(descriptor: PublicationDescriptor): string;
+export function publicationLeaf(descriptor: PublicationDescriptor): Uint8Array;
+export function merkleRoot(leaves: Uint8Array[]): Uint8Array;
+export function buildPublicationTree(
+  descriptors: PublicationDescriptor[],
+  batchId: string,
+): { root: string; proofs: Record<string, PublicationProof> };
+export function verifyPublicationProof(
+  envelope: Record<string, unknown>,
+  proof: PublicationProof,
+  expectedRoot: string,
+): boolean;
+
 export const ENVELOPE_DOMAIN: string;
 export function canonicalJson(value: unknown): string;
 export function envelopeSigningInput(envelope: Record<string, unknown>): Uint8Array;
@@ -74,23 +109,30 @@ export function parseStatus(text: string): Record<string, unknown>;
 export function evaluateStatus(fields: GovpFields, status: Record<string, unknown>, options?: StatusOptions): Promise<StatusResult>;
 
 declare const GOVP: {
+  EMPTY_PUBLICATION_ROOT: typeof EMPTY_PUBLICATION_ROOT;
   ENVELOPE_DOMAIN: typeof ENVELOPE_DOMAIN;
   RECORD_DOMAIN: string;
   TYPECODE: Record<string, string>;
   deriveGovpId: typeof deriveGovpId;
   deriveKeyId: typeof deriveKeyId;
   canonicalJson: typeof canonicalJson;
+  buildPublicationTree: typeof buildPublicationTree;
   envelopeSigningInput: typeof envelopeSigningInput;
+  eventDescriptor: typeof eventDescriptor;
   evaluateStatus: typeof evaluateStatus;
   loadJsonRecord: typeof loadJsonRecord;
   normalizeCanonical: typeof normalizeCanonical;
   normalizeFieldName: typeof normalizeFieldName;
   parseRecord: typeof parseRecord;
   parseStatus: typeof parseStatus;
+  merkleRoot: typeof merkleRoot;
+  publicationEntryId: typeof publicationEntryId;
+  publicationLeaf: typeof publicationLeaf;
   signingInput: typeof signingInput;
   trimFieldValue: typeof trimFieldValue;
   verifyFields: typeof verifyFields;
   verifyEnvelope: typeof verifyEnvelope;
+  verifyPublicationProof: typeof verifyPublicationProof;
   verifyRecordSignature: typeof verifyRecordSignature;
   verifyText: typeof verifyText;
 };
