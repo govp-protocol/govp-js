@@ -1,11 +1,13 @@
 /*
  * GOVP-1 JavaScript verifier.
  *
- * This module is byte-compatible with govp-protocol/govp 0.1.11. Records are
+ * This module is byte-compatible with govp-protocol/govp 0.1.12. Records are
  * processed locally and no field is uploaded by this code.
  */
 import { Point, hashes, verify as nobleVerify } from '@noble/ed25519';
 import { sha256, sha512 } from '@noble/hashes/sha2.js';
+import { ENVELOPE_DOMAIN, canonicalJson, envelopeSigningInput, verifyEnvelope } from './envelope.js';
+export { ENVELOPE_DOMAIN, canonicalJson, envelopeSigningInput, verifyEnvelope };
 
 hashes.sha512 = sha512;
 
@@ -634,10 +636,13 @@ export async function evaluateStatus(
 }
 
 export const GOVP = {
+  ENVELOPE_DOMAIN,
   RECORD_DOMAIN,
   TYPECODE,
   deriveGovpId,
   deriveKeyId,
+  canonicalJson,
+  envelopeSigningInput,
   evaluateStatus,
   loadJsonRecord,
   normalizeCanonical,
@@ -647,6 +652,7 @@ export const GOVP = {
   signingInput,
   trimFieldValue,
   verifyFields,
+  verifyEnvelope,
   verifyRecordSignature,
   verifyText,
 };

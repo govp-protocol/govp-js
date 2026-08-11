@@ -30,6 +30,21 @@ export interface StatusResult {
   reasons: string[];
 }
 
+export interface EnvelopeResult {
+  ok: boolean;
+  checks: Record<string, boolean | null>;
+  signingInputSha256: string | null;
+  warnings: string[];
+}
+
+export const ENVELOPE_DOMAIN: string;
+export function canonicalJson(value: unknown): string;
+export function envelopeSigningInput(envelope: Record<string, unknown>): Uint8Array;
+export function verifyEnvelope(
+  envelope: Record<string, unknown>,
+  options?: { subjectBytes?: Uint8Array | ArrayBuffer | null },
+): Promise<EnvelopeResult>;
+
 export interface VerifyOptions {
   fetchedUrl?: string | null;
   assetBytes?: Uint8Array | ArrayBuffer | null;
@@ -59,10 +74,13 @@ export function parseStatus(text: string): Record<string, unknown>;
 export function evaluateStatus(fields: GovpFields, status: Record<string, unknown>, options?: StatusOptions): Promise<StatusResult>;
 
 declare const GOVP: {
+  ENVELOPE_DOMAIN: typeof ENVELOPE_DOMAIN;
   RECORD_DOMAIN: string;
   TYPECODE: Record<string, string>;
   deriveGovpId: typeof deriveGovpId;
   deriveKeyId: typeof deriveKeyId;
+  canonicalJson: typeof canonicalJson;
+  envelopeSigningInput: typeof envelopeSigningInput;
   evaluateStatus: typeof evaluateStatus;
   loadJsonRecord: typeof loadJsonRecord;
   normalizeCanonical: typeof normalizeCanonical;
@@ -72,6 +90,7 @@ declare const GOVP: {
   signingInput: typeof signingInput;
   trimFieldValue: typeof trimFieldValue;
   verifyFields: typeof verifyFields;
+  verifyEnvelope: typeof verifyEnvelope;
   verifyRecordSignature: typeof verifyRecordSignature;
   verifyText: typeof verifyText;
 };
