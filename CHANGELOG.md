@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+- add the environment-neutral GOVP AI-1 receiving gate, TypeScript declarations
+  and byte-exact parity for request, result and recomputation evidence;
+- reject non-canonical transport, missing subjects, inconsistent terminal
+  states, causal-reference substitution and semantic-comparison claims.
+
 ## 0.1.10 — 2026-08-11
 
 - add an environment-neutral verifier and builder for the static

@@ -6,6 +6,8 @@ GOVP-ID derivation, asset binding, canonical URL checks and GOVP-STATUS-1.
 It also verifies GOVP-EXT-1 signed evidence envelopes with the same byte-exact
 canonical input as the Python reference implementation. It also rebuilds and
 verifies `org.govp.publication-batch/1` Merkle inclusion proofs locally.
+It also implements the GOVP AI-1 receiving gate and reproduces the Python
+admission codes from the same canonical-byte corpus.
 
 The package works in modern browsers and Node.js 20 or newer. It does not send
 records, assets or results to GOVP.
@@ -79,6 +81,18 @@ This operation is local. It verifies the signature, deterministic signing
 input, subject digest, declared origin and registered reference shapes; it does
 not fetch or independently validate external attestations.
 
+## Receive GOVP AI-1 evidence
+
+```js
+import { receiveAi } from '@govp/verifier';
+
+const reception = await receiveAi(canonicalEnvelopeBytes, { subjectBytes });
+if (!reception.admitted) throw new Error(reception.code);
+```
+
+Admission validates structure and causal bindings only. It is not a trust,
+regulatory-sufficiency or execution-authorization decision.
+
 ## Verify a static publication proof
 
 ```js
@@ -103,7 +117,7 @@ import vectors from '@govp/verifier/conformance/vectors.json' with { type: 'json
 
 Run the implementation suite with `npm test`; the tests are included in the
 published package, so this command also works after a registry install. The
-suite tests every GOVP-1 vector, GOVP-STATUS-1, the shared GOVP-EXT-1 corpus and
+suite tests every GOVP-1 vector, GOVP-STATUS-1, GOVP AI-1, the shared GOVP-EXT-1 corpus and
 the exact Python publication roots and proofs for 7 and 10,000 events.
 
 Specification and documentation: [govp.io](https://govp.io)  

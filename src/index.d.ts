@@ -37,6 +37,26 @@ export interface EnvelopeResult {
   warnings: string[];
 }
 
+export interface AiReception {
+  admitted: boolean;
+  code: string | null;
+  envelope: Record<string, unknown> | null;
+  checks: Record<string, boolean | null>;
+  warnings: string[];
+}
+
+export const AI1_CODES: readonly string[];
+export const AI_EXTENSION: Readonly<{ id: string; version: string }>;
+export const AI_TYPES: readonly string[];
+export function validateAiPayload(envelope: Record<string, unknown>): [boolean, string | null];
+export function receiveAi(
+  data: Uint8Array,
+  options?: { subjectBytes?: Uint8Array | ArrayBuffer | null },
+): Promise<AiReception>;
+export function receiveAiChain(
+  items: Array<{ data: Uint8Array; subjectBytes: Uint8Array | ArrayBuffer }>,
+): Promise<{ admitted: boolean; code: string | null; records: AiReception[] }>;
+
 export interface PublicationDescriptor {
   id: string;
   key_id: string;
@@ -111,6 +131,9 @@ export function evaluateStatus(fields: GovpFields, status: Record<string, unknow
 declare const GOVP: {
   EMPTY_PUBLICATION_ROOT: typeof EMPTY_PUBLICATION_ROOT;
   ENVELOPE_DOMAIN: typeof ENVELOPE_DOMAIN;
+  AI1_CODES: typeof AI1_CODES;
+  AI_EXTENSION: typeof AI_EXTENSION;
+  AI_TYPES: typeof AI_TYPES;
   RECORD_DOMAIN: string;
   TYPECODE: Record<string, string>;
   deriveGovpId: typeof deriveGovpId;
@@ -125,6 +148,8 @@ declare const GOVP: {
   normalizeFieldName: typeof normalizeFieldName;
   parseRecord: typeof parseRecord;
   parseStatus: typeof parseStatus;
+  receiveAi: typeof receiveAi;
+  receiveAiChain: typeof receiveAiChain;
   merkleRoot: typeof merkleRoot;
   publicationEntryId: typeof publicationEntryId;
   publicationLeaf: typeof publicationLeaf;
@@ -135,6 +160,7 @@ declare const GOVP: {
   verifyPublicationProof: typeof verifyPublicationProof;
   verifyRecordSignature: typeof verifyRecordSignature;
   verifyText: typeof verifyText;
+  validateAiPayload: typeof validateAiPayload;
 };
 
 export default GOVP;
