@@ -53,6 +53,9 @@ export function receiveAi(
   data: Uint8Array,
   options?: { subjectBytes?: Uint8Array | ArrayBuffer | null },
 ): Promise<AiReception>;
+export function receiveAiChain(
+  items: Array<{ data: Uint8Array; subjectBytes: Uint8Array | ArrayBuffer }>,
+): Promise<{ admitted: boolean; code: string | null; records: AiReception[] }>;
 
 export interface PublicationDescriptor {
   id: string;
@@ -146,6 +149,7 @@ declare const GOVP: {
   parseRecord: typeof parseRecord;
   parseStatus: typeof parseStatus;
   receiveAi: typeof receiveAi;
+  receiveAiChain: typeof receiveAiChain;
   merkleRoot: typeof merkleRoot;
   publicationEntryId: typeof publicationEntryId;
   publicationLeaf: typeof publicationLeaf;

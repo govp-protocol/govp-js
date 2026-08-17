@@ -1,4 +1,5 @@
 import { canonicalJson, verifyEnvelope } from './envelope.js';
+import { sha256 } from '@noble/hashes/sha2.js';
 
 export const AI_EXTENSION = Object.freeze({ id: 'org.govp.ai', version: '1.0.0' });
 export const AI_TYPES = Object.freeze([
@@ -16,6 +17,8 @@ export const AI1_CODES = Object.freeze([
   'AI1_COMPARISON_UNSUPPORTED',
   'AI1_SUBJECT_REQUIRED',
   'AI1_SUBJECT_DIGEST_MISMATCH',
+  'AI1_CHAIN_INCOMPLETE',
+  'AI1_CHAIN_CONFLICT',
 ]);
 
 const MAX_BYTES = 4 * 1024 * 1024;
@@ -168,3 +171,46 @@ export async function receiveAi(data, { subjectBytes = null } = {}) {
   return { admitted: valid, code, envelope, checks, warnings: l0.warnings };
 }
 
+function hex(bytes) {
+  return Array.from(bytes, (byte) => byte.toString(16).padStart(2, '0')).join('');
+}
+
+export async function receiveAiChain(items) {
+  if (!Array.isArray(items) || items.length === 0) {
+    return { admitted: false, code: 'AI1_CHAIN_INCOMPLETE', records: [] };
+  }
+  const records = []; const byId = new Map(); const nonces = new Set(); const attempts = new Set();
+  for (const item of items) {
+    const reception = await receiveAi(item.data, { subjectBytes: item.subjectBytes });
+    records.push(reception);
+    if (!reception.admitted || reception.envelope === null) {
+      return { admitted: false, code: reception.code, records };
+    }
+    const envelope = reception.envelope; const payload = envelope.payload;
+    if (byId.has(envelope.id)) return { admitted: false, code: 'AI1_CHAIN_CONFLICT', records };
+    const recordDigest = `sha256:${hex(sha256(item.data))}`;
+    if (envelope.type === 'org.govp.ai-request/1') {
+      if (nonces.has(payload.nonce)) return { admitted: false, code: 'AI1_CHAIN_CONFLICT', records };
+      nonces.add(payload.nonce);
+    } else if (envelope.type === 'org.govp.ai-result/1') {
+      const request = byId.get(payload.request.id);
+      if (!request || request.type !== 'org.govp.ai-request/1' || request.digest !== payload.request.digest) {
+        return { admitted: false, code: 'AI1_CHAIN_INCOMPLETE', records };
+      }
+      const attempt = `${payload.request.id}\0${payload.attempt_id}`;
+      if (attempts.has(attempt)) return { admitted: false, code: 'AI1_CHAIN_CONFLICT', records };
+      attempts.add(attempt);
+    } else {
+      const request = byId.get(payload.request.id); const result = byId.get(payload.result.id);
+      if (!request || !result || request.type !== 'org.govp.ai-request/1'
+        || result.type !== 'org.govp.ai-result/1' || request.digest !== payload.request.digest
+        || result.digest !== payload.result.digest
+        || result.payload.request.id !== payload.request.id
+        || result.payload.request.digest !== payload.request.digest) {
+        return { admitted: false, code: 'AI1_CHAIN_INCOMPLETE', records };
+      }
+    }
+    byId.set(envelope.id, { type: envelope.type, digest: recordDigest, payload });
+  }
+  return { admitted: true, code: null, records };
+}
