@@ -81,6 +81,9 @@ test('all GOVP-EXT-1 vectors reproduce Python byte-exact results', async () => {
 test('extension canonical JSON has cross-language UTF-16 ordering and safe numbers', () => {
   assert.equal(canonicalJson({ '\u{10000}': 1, '\ue000': 2 }), '{"𐀀":1,"":2}');
   assert.throws(() => canonicalJson({ amount: 1.5 }), /safe integers/);
+  assert.throws(() => canonicalJson({ id: '\ud800' }), /Unicode scalar values/);
+  assert.throws(() => canonicalJson({ id: '\udc00' }), /Unicode scalar values/);
+  assert.equal(canonicalJson({ id: '\ud800\udc00' }), '{"id":"𐀀"}');
 });
 
 test('publication Merkle roots and proofs are byte-exact with Python', () => {
