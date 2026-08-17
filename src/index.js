@@ -7,6 +7,7 @@
 import { Point, hashes, verify as nobleVerify } from '@noble/ed25519';
 import { sha256, sha512 } from '@noble/hashes/sha2.js';
 import { ENVELOPE_DOMAIN, canonicalJson, envelopeSigningInput, verifyEnvelope } from './envelope.js';
+import { AI1_CODES, AI_EXTENSION, AI_TYPES, receiveAi, validateAiPayload } from './ai.js';
 import {
   EMPTY_PUBLICATION_ROOT,
   buildPublicationTree,
@@ -17,6 +18,7 @@ import {
   verifyPublicationProof,
 } from './publication.js';
 export { ENVELOPE_DOMAIN, canonicalJson, envelopeSigningInput, verifyEnvelope };
+export { AI1_CODES, AI_EXTENSION, AI_TYPES, receiveAi, validateAiPayload };
 export {
   EMPTY_PUBLICATION_ROOT,
   buildPublicationTree,
@@ -654,6 +656,9 @@ export async function evaluateStatus(
 }
 
 export const GOVP = {
+  AI1_CODES,
+  AI_EXTENSION,
+  AI_TYPES,
   EMPTY_PUBLICATION_ROOT,
   ENVELOPE_DOMAIN,
   RECORD_DOMAIN,
@@ -673,6 +678,7 @@ export const GOVP = {
   merkleRoot,
   publicationEntryId,
   publicationLeaf,
+  receiveAi,
   signingInput,
   trimFieldValue,
   verifyFields,
@@ -680,6 +686,7 @@ export const GOVP = {
   verifyPublicationProof,
   verifyRecordSignature,
   verifyText,
+  validateAiPayload,
 };
 
 export default GOVP;

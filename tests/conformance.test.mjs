@@ -17,6 +17,7 @@ import {
   publicationEntryId,
   verifyPublicationProof,
   verifyEnvelope,
+  receiveAi,
 } from '../src/index.js';
 
 const textVectors = JSON.parse(await readFile(new URL(
@@ -30,6 +31,9 @@ const statusVectors = JSON.parse(await readFile(new URL(
 ), 'utf8'));
 const extensionVectors = JSON.parse(await readFile(new URL(
   '../conformance/extension-vectors.json', import.meta.url,
+), 'utf8'));
+const aiVectors = JSON.parse(await readFile(new URL(
+  '../conformance/ai-vectors.json', import.meta.url,
 ), 'utf8'));
 const publicationVectors = JSON.parse(await readFile(new URL(
   '../conformance/publication-vectors.json', import.meta.url,
@@ -75,6 +79,17 @@ test('all GOVP-EXT-1 vectors reproduce Python byte-exact results', async () => {
     assert.deepEqual(result.checks, expectedChecks, `${vector.name}: checks`);
     assert.equal(result.ok, vector.expected.valid, `${vector.name}: validity`);
     assert.equal(result.signingInputSha256, vector.expected.signing_input_sha256, `${vector.name}: bytes`);
+  }
+});
+
+test('all GOVP AI-1 vectors reproduce Python gate results', async () => {
+  assert.equal(aiVectors.format, 'GOVP-AI-1-CONFORMANCE');
+  for (const vector of aiVectors.vectors) {
+    const result = await receiveAi(Buffer.from(vector.transport_base64, 'base64'), {
+      subjectBytes: Buffer.from(vector.subject_base64, 'base64'),
+    });
+    assert.equal(result.admitted, vector.expected.admitted, `${vector.name}: admitted`);
+    assert.equal(result.code, vector.expected.code, `${vector.name}: code`);
   }
 });
 
