@@ -12,6 +12,10 @@ records, assets or results to GOVP.
 
 ## Install
 
+The current coordinated GOVP release is **0.1.13** for Python, JavaScript and
+the website. Package versions are aligned; Python provides issuance and CLI
+workflows, while this package provides environment-neutral verification.
+
 Install the public package from the npm registry:
 
 ```bash
@@ -22,7 +26,7 @@ For reproducible audits, the matching release tarball and `SHA256SUMS` are also
 published with the signed GitHub release:
 
 ```bash
-npm install https://github.com/govp-protocol/govp-js/releases/download/v0.1.11/govp-verifier-0.1.11.tgz
+npm install https://github.com/govp-protocol/govp-js/releases/download/v0.1.13/govp-verifier-0.1.13.tgz
 ```
 
 ## Verify a record

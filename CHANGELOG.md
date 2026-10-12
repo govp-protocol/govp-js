@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.13 — 2026-10-12
+
+- align the public JavaScript package version with GOVP Python and the website
+  at 0.1.13; 0.1.12 is intentionally skipped for release alignment;
+- retain the Unicode scalar-value validation fix from JavaScript 0.1.11;
+- preserve the implementation, public API, signing bytes and conformance
+  verdicts from JavaScript 0.1.11.
+
 ## 0.1.11 — 2026-10-12
 
 - reject a trailing unpaired UTF-16 high surrogate in GOVP-EXT-1 canonical JSON,
