@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.11 — 2026-10-12
+
+- reject a trailing unpaired UTF-16 high surrogate in GOVP-EXT-1 canonical JSON,
+  preserving the Unicode scalar-value contract across languages;
+- include regressions for unpaired high and low surrogates and valid pairs;
+- preserve the public API, valid canonical signing bytes and conformance verdicts.
+
 ## 0.1.10 — 2026-08-11
 
 - add an environment-neutral verifier and builder for the static
